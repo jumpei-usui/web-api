@@ -2,12 +2,12 @@ name: AWS example workflow
 on:
   push:
     branches:
-      - main 
+      - main
 permissions:
   id-token: write
   contents: read
 jobs:
-  S3PackageUpload:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -17,3 +17,15 @@ jobs:
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: ${{ vars.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ vars.REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
