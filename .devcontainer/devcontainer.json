@@ -1,7 +1,9 @@
 {
 	"name": "Python 3",
-	"image": "mcr.microsoft.com/devcontainers/python:1-3.12-bullseye",
-	"initializeCommand": "ssh-add ~/.ssh/private_github",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"initializeCommand": "ssh-add ~/.ssh/private_github ~/.ssh/web-infra.pem",
 	"postStartCommand": "git config core.hooksPath .githooks && pipenv sync --system",
 	"customizations": {
 		"vscode": {
