@@ -55,6 +55,11 @@ def healthy():
     return "healthy"
 
 
+@app.get("/test")
+def test():
+    return "test"
+
+
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str | None = None):
     return {"item_id": item_id * 2, "q": f"{q} x {q}"}
