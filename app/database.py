@@ -29,7 +29,7 @@ def provide_token(dialect, conn_rec, cargs, cparams):
         Region=os.environ["REGION"],
     )
     cparams["host"] = os.environ["HOST"]
-    cparams["port"] = os.environ["PORT"]
+    cparams["port"] = int(os.environ["PORT"])
     cparams["user"] = os.environ["DB_USER"]
     cparams["password"] = token
     cparams["database"] = os.environ["DATABASE"]
