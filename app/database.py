@@ -1,3 +1,5 @@
+import os
+
 import boto3
 from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
@@ -21,16 +23,16 @@ Base = declarative_base()
 @event.listens_for(engine, "do_connect")
 def provide_token(dialect, conn_rec, cargs, cparams):
     token = client.generate_db_auth_token(
-        DBHostname="rds.amazonaws.com",
+        DBHostname=os.environ["ENDPOINT"],
         Port=3306,
-        DBUsername="api",
-        Region="us-east-1",
+        DBUsername=os.environ["DB_USER"],
+        Region=os.environ["REGION"],
     )
-    cparams["host"] = "127.0.0.1"
-    cparams["port"] = 3307
-    cparams["user"] = "api"
+    cparams["host"] = os.environ["HOST"]
+    cparams["port"] = os.environ["PORT"]
+    cparams["user"] = os.environ["DB_USER"]
     cparams["password"] = token
-    cparams["database"] = "main"
+    cparams["database"] = os.environ["DATABASE"]
 
 
 def get_db():
